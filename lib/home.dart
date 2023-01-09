@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'database.dart';
+
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
 
@@ -21,25 +23,29 @@ class _HomeState extends State<Home> {
               const SizedBox(height: 50),
               OutlinedButton(
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const Create()));
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => const Create()));
                 },
                 child: const Text('Create'),
               ),
               OutlinedButton(
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const Read()));
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => const Read()));
                 },
                 child: const Text('Read'),
               ),
               OutlinedButton(
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const Update()));
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => const Update()));
                 },
                 child: const Text('Update'),
               ),
               OutlinedButton(
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const Delete()));
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => const Delete()));
                 },
                 child: const Text('Delete'),
               ),
@@ -60,6 +66,19 @@ class Create extends StatefulWidget {
 
 class _CreateState extends State<Create> {
   TextEditingController textEditingController = TextEditingController();
+  List<String> items = <String>[];
+  Future<void> addItem() async {
+    await SQLHelper.createItem(textEditingController.text);
+    refreshData();
+    textEditingController.text = '';
+  }
+
+  void refreshData() async {
+    setState(() {
+      items.add(textEditingController.text);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -67,39 +86,60 @@ class _CreateState extends State<Create> {
         appBar: AppBar(
           title: const Text('C R E A T E'),
         ),
-        body: Column(
-          children: [
-            const SizedBox(height: 50),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                controller: textEditingController,
-                decoration: InputDecoration(
-                  labelText: 'Item',
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(
-                      color: Colors.black,
-                      width: 2.0,
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(height: 50),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    TextField(
+                      controller: textEditingController,
+                      decoration: InputDecoration(
+                        labelText: 'Item',
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(
+                            color: Colors.black,
+                            width: 2.0,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(
+                            color: Colors.blue,
+                            width: 2.0,
+                          ),
+                        ),
+                        suffixIcon: IconButton(
+                          icon: const Icon(Icons.save),
+                          onPressed: () {
+                            addItem();
+                          },
+                        ),
+                      ),
                     ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: const BorderSide(
-                      color: Colors.blue,
-                      width: 2.0,
+                    const SizedBox(height: 20),
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.blue[100],
+                      ),
+                      height: 500,
+                      child: ListView.builder(
+                          itemCount: items.length,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              title: Text(items[index]),
+                            );
+                          }),
                     ),
-                  ),
-                  suffixIcon: IconButton(
-                    icon: const Icon(Icons.save),
-                    onPressed: () {
-                      textEditingController.text = '';
-                    },
-                  ),
+                  ],
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -114,7 +154,20 @@ class Read extends StatefulWidget {
 }
 
 class _ReadState extends State<Read> {
-  List<String> items = <String>[];
+  List<Map<String, dynamic>> items = [];
+  void refreshDate() async {
+    final data = await SQLHelper.getItems();
+    setState(() {
+      items = data;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    refreshDate();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -128,7 +181,7 @@ class _ReadState extends State<Read> {
               itemCount: items.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                  title: Text(items[index]),
+                  title: Text(items[index]['item']),
                 );
               }),
         ),
@@ -146,8 +199,27 @@ class Update extends StatefulWidget {
 
 class _UpdateState extends State<Update> {
   bool editing = false;
-  List<String> items = <String>[];
   TextEditingController textEditingController = TextEditingController();
+  int? selectedId;
+  List<Map<String, dynamic>> items = [];
+  void refreshDate() async {
+    final data = await SQLHelper.getItems();
+    setState(() {
+      items = data;
+    });
+  }
+
+  Future<void> updateItem(int id) async {
+    await SQLHelper.updateItem(id, textEditingController.text);
+    refreshDate();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    refreshDate();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -163,10 +235,19 @@ class _UpdateState extends State<Update> {
                 itemCount: items.length,
                 itemBuilder: (context, index) {
                   return ListTile(
-                    title: Text(items[index]),
-                    trailing: const Icon(
-                      Icons.edit,
-                      color: Colors.green,
+                    title: Text(items[index]['item']),
+                    trailing: IconButton(
+                      icon: const Icon(
+                        Icons.edit,
+                        color: Colors.green,
+                      ),
+                      onPressed: () {
+                        selectedId = items[index]['id'];
+                        textEditingController.text = items[index]['item'];
+                        setState(() {
+                          editing = true;
+                        });
+                      },
                     ),
                   );
                 }),
@@ -196,7 +277,14 @@ class _UpdateState extends State<Update> {
                     ),
                     suffixIcon: IconButton(
                       icon: const Icon(Icons.check),
-                      onPressed: () {},
+                      onPressed: () {
+                        updateItem(selectedId!);
+                        setState(() {
+                          editing = false;
+                        });
+
+                        //updateItem(items[index]['id']);
+                      },
                     ),
                   ),
                 ),
@@ -217,7 +305,25 @@ class Delete extends StatefulWidget {
 }
 
 class _DeleteState extends State<Delete> {
-  List<String> items = <String>[];
+  List<Map<String, dynamic>> items = [];
+  void refreshDate() async {
+    final data = await SQLHelper.getItems();
+    setState(() {
+      items = data;
+    });
+  }
+
+  void deleteItem(int id) async {
+    await SQLHelper.deleteItem(id);
+    refreshDate();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    refreshDate();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -231,10 +337,15 @@ class _DeleteState extends State<Delete> {
               itemCount: items.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                  title: Text(items[index]),
-                  trailing: const Icon(
-                    Icons.delete,
-                    color: Colors.red,
+                  title: Text(items[index]['item']),
+                  trailing: IconButton(
+                    onPressed: () {
+                      deleteItem(items[index]['id']);
+                    },
+                    icon: const Icon(
+                      Icons.delete,
+                      color: Colors.red,
+                    ),
                   ),
                 );
               }),

@@ -5,15 +5,16 @@ class SQLHelper {
   static Future<void> createTables(sql.Database database) async {
     await database.execute("""CREATE TABLE items(
         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-        item TEXT,
+        item TEXT
       )
       """);
   }
 
   static Future<sql.Database> db() async {
+    print('database created');
     return sql.openDatabase(
       'database.db',
-      //version: 1,
+      version: 1,
       onCreate: (sql.Database database, int version) async {
         await createTables(database);
       },
