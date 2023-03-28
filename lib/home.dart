@@ -22,30 +22,33 @@ class _HomeState extends State<Home> {
             children: [
               const SizedBox(height: 50),
               OutlinedButton(
+                style: OutlinedButton.styleFrom(fixedSize: const Size(200, 50)),
                 onPressed: () {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => const Create()));
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const Create()));
                 },
                 child: const Text('Create'),
               ),
+              const SizedBox(height: 25),
               OutlinedButton(
+                style: OutlinedButton.styleFrom(fixedSize: const Size(200, 50)),
                 onPressed: () {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => const Read()));
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const Read()));
                 },
                 child: const Text('Read'),
               ),
+              const SizedBox(height: 25),
               OutlinedButton(
+                style: OutlinedButton.styleFrom(fixedSize: const Size(200, 50)),
                 onPressed: () {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => const Update()));
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const Update()));
                 },
                 child: const Text('Update'),
               ),
+              const SizedBox(height: 25),
               OutlinedButton(
+                style: OutlinedButton.styleFrom(fixedSize: const Size(200, 50)),
                 onPressed: () {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => const Delete()));
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const Delete()));
                 },
                 child: const Text('Delete'),
               ),
