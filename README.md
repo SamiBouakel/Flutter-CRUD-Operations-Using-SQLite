@@ -6,7 +6,7 @@ This is a simple CRUD (Create, Read, Update, Delete) application built using the
 ## Android Screenshots
   Home Page                 |                                              Create Page                                               |  Delete Page
 :--------------------------:|:------------------------------------------------------------------------------------------------------:|:-------------------------:
-![](https://github.com/SamiBouakel/Flutter-CRUD-Operations-Using-SQLite/screenshots/Screenshot_1_.jpg?raw=true)| ![](https://github.com/SamiBouakel/Flutter-CRUD-Operations-Using-SQLite/screenshots/Screenshot_2_.jpg) |![](https://github.com/SamiBouakel/Flutter-CRUD-Operations-Using-SQLite/screenshots/Screenshot_3_.jpg)
+![](https://github.com/SamiBouakel/Flutter-CRUD-Operations-Using-SQLite/blob/main/screenshots/Screenshot_1_.jpg?raw=true)| ![](https://github.com/SamiBouakel/Flutter-CRUD-Operations-Using-SQLite/blob/main/screenshots/Screenshot_2_.jpg?raw=true) |![](https://github.com/SamiBouakel/Flutter-CRUD-Operations-Using-SQLite/blob/main/screenshots/Screenshot_5_.jpg?raw=true)
 
 
 **Dependencies (packages used on this project):** 
@@ -48,8 +48,10 @@ flutter run
 ![GitHub last commit](https://img.shields.io/github/last-commit/SamiBouakel/Flutter-CRUD-Operations-Using-SQLite)
 
 
-<!---> If you found this project helpful or you learned something from the source code and want to thank me, consider buying me a cup of :coffee:
+<!---
+> If you found this project helpful or you learned something from the source code and want to thank me, consider buying me a cup of :coffee:
 >
 > * [PayPal](https://www.paypal.me/TheAlphamerc/)
 > You can also nominate me for Github Star developer program
-> https://stars.github.com/nominate-->
+> https://stars.github.com/nominate 
+-->
